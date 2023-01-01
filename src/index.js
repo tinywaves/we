@@ -1,6 +1,4 @@
-const Koa = require('koa');
-
-const app = new Koa();
+const app = require('./app');
 
 app.listen(9999, () => {
   console.log('tinyRipple-hub server...');
