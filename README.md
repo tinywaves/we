@@ -30,13 +30,6 @@ MYSQL_USER=?
 MYSQL_PASSWORD=?
 ```
 
-## interfaces
+## api documentation
 
-- <samp><b>user register</b></samp> `POST /user/register`
-```json
-request:
-{
-  "username": "tinyRipple",
-  "password": "1234567890"
-}
-```
+- <samp><b><a href="https://tinyripple.notion.site/tinyRipple-hub-99cfe913728e49f9b272d40e048f711a" _target="_blank">Click Here</a></b></samp>
