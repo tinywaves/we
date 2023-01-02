@@ -14,6 +14,16 @@ class UserControllers {
     // return a response
     ctx.body = result;
   }
+  /**
+   * login
+   * @param {*} ctx 
+   * @param {*} next 
+   */
+  async login(ctx, next) {
+    const { username, password } = ctx.request.body;
+
+    ctx.body = `login success${username}`;
+  }
 }
 
 module.exports = new UserControllers();

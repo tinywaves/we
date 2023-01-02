@@ -11,4 +11,9 @@ userRouters.post('/register',
   userControllers.createNewUser
 );
 
+userRouters.post('/login',
+  userMiddlewares.verifyLogin,
+  userControllers.login
+);
+
 module.exports = userRouters;

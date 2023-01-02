@@ -1,6 +1,8 @@
 const {
   USERNAME_OR_PASSWORD_IS_REQUIRED,
-  USER_ALREADY_EXIST
+  USER_ALREADY_EXIST,
+  USER_IS_NOT_EXIST,
+  PASSWORD_IS_INCORRECT
 } = require('../constants/error-types');
 const { userServices } = require('../services');
 const { md5Transform } = require('../utils');
@@ -36,4 +38,34 @@ const handlePassword = async (ctx, next) => {
   await next();
 };
 
-module.exports = { verifyUser, handlePassword };
+const verifyLogin = async (ctx, next) => {
+  const { username, password } = ctx.request.body;
+
+  // username or password should not be empty
+  if (
+    !username ||
+    !password ||
+    username.length === 0 ||
+    password.length === 0
+  ) {
+    return ctx.app.emit('error', new Error(USERNAME_OR_PASSWORD_IS_REQUIRED), ctx);
+  }
+
+  // judge if user is exist
+  const result = await userServices.getUserByUsername(username);
+  const user = result[0];
+
+  if (!user) {
+    return ctx.app.emit('error', new Error(USER_IS_NOT_EXIST), ctx);
+  }
+
+  // judge if password is correct
+  const md5TransformPassword = md5Transform(password);
+  if (md5TransformPassword !== user?.password) {
+    return ctx.app.emit('error', new Error(PASSWORD_IS_INCORRECT), ctx);
+  }
+
+  await next();
+};
+
+module.exports = { verifyUser, handlePassword, verifyLogin };
