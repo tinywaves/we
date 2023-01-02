@@ -7,6 +7,7 @@ const userRouters = new KoaRouter({ prefix: '/user' });
 
 userRouters.post('/register',
   userMiddlewares.verifyUser,
+  userMiddlewares.handlePassword,
   userControllers.createNewUser
 );
 

@@ -3,6 +3,7 @@ const {
   USER_ALREADY_EXIST
 } = require('../constants/error-types');
 const { userServices } = require('../services');
+const { md5Transform } = require('../utils');
 
 const verifyUser = async (ctx, next) => {
   const { username, password } = ctx.request.body;
@@ -27,4 +28,12 @@ const verifyUser = async (ctx, next) => {
   await next();
 };
 
-module.exports = { verifyUser };
+const handlePassword = async (ctx, next) => {
+  const { password } = ctx.request.body;
+
+  ctx.request.body.password = md5Transform(password);
+
+  await next();
+};
+
+module.exports = { verifyUser, handlePassword };
