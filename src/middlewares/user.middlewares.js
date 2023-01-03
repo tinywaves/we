@@ -51,7 +51,7 @@ const verifyLogin = async (ctx, next) => {
     return ctx.app.emit('error', new Error(USERNAME_OR_PASSWORD_IS_REQUIRED), ctx);
   }
 
-  // judge if user is exist
+  // judge if user is existing
   const result = await userServices.getUserByUsername(username);
   const user = result[0];
 
@@ -64,6 +64,8 @@ const verifyLogin = async (ctx, next) => {
   if (md5TransformPassword !== user?.password) {
     return ctx.app.emit('error', new Error(PASSWORD_IS_INCORRECT), ctx);
   }
+
+  ctx.user = user;
 
   await next();
 };

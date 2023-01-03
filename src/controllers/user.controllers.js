@@ -1,4 +1,7 @@
+const jwt = require('jsonwebtoken');
+
 const { userServices } = require('../services');
+const { PRIVATE_KEY } = require('../app/config');
 
 class UserControllers {
   /**
@@ -14,15 +17,23 @@ class UserControllers {
     // return a response
     ctx.body = result;
   }
+
   /**
    * login
    * @param {*} ctx 
    * @param {*} next 
    */
   async login(ctx, next) {
-    const { username, password } = ctx.request.body;
+    const { id, username } = ctx.user;
+    const token = jwt.sign({ id, username }, PRIVATE_KEY, {
+      expiresIn: 24 * 60 * 60,
+      algorithm: 'RS256'
+    });
 
-    ctx.body = `login success${username}`;
+    ctx.body = {
+      username,
+      token
+    };
   }
 }
 
