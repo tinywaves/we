@@ -66,3 +66,7 @@ Generate public-key.
 ```shell
 OpenSSL> rsa -in private.key -pubout -out public.key
 ```
+
+## JWT
+
+This project uses Bearer Token.

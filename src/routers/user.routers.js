@@ -16,4 +16,9 @@ userRouters.post('/login',
   userControllers.login
 );
 
+userRouters.get('/authorization',
+  userMiddlewares.verifyAuth,
+  userControllers.authSuccess
+);
+
 module.exports = userRouters;

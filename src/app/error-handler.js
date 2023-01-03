@@ -3,7 +3,9 @@ const {
   USER_ALREADY_EXIST,
   USER_IS_NOT_EXIST,
   PASSWORD_IS_INCORRECT,
-  REGISTER_FAILED
+  REGISTER_FAILED,
+  UNAUTHORIZED_TOKEN,
+  AUTHORIZATION_MISSING
 } = require('../constants/error-types');
 
 module.exports = (error, ctx) => {
@@ -38,6 +40,18 @@ module.exports = (error, ctx) => {
       {
         status = 400;
         errorMessage = 'register failed, please retry later';
+        break;
+      }
+    case UNAUTHORIZED_TOKEN:
+      {
+        status = 401;
+        errorMessage = 'unauthorized token, please login again';
+        break;
+      }
+    case AUTHORIZATION_MISSING:
+      {
+        status = 500;
+        errorMessage = 'please carry token when make a request';
         break;
       }
     default:

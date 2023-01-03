@@ -40,6 +40,12 @@ class UserControllers {
       token
     };
   }
+
+  async authSuccess(ctx, next) {
+    ctx.body = {
+      authorized: true
+    };
+  }
 }
 
 module.exports = new UserControllers();
