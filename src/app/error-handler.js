@@ -2,7 +2,8 @@ const {
   USERNAME_OR_PASSWORD_IS_REQUIRED,
   USER_ALREADY_EXIST,
   USER_IS_NOT_EXIST,
-  PASSWORD_IS_INCORRECT
+  PASSWORD_IS_INCORRECT,
+  REGISTER_FAILED
 } = require('../constants/error-types');
 
 module.exports = (error, ctx) => {
@@ -31,6 +32,12 @@ module.exports = (error, ctx) => {
       {
         status = 400;
         errorMessage = 'your input password is incorrect';
+        break;
+      }
+    case REGISTER_FAILED:
+      {
+        status = 400;
+        errorMessage = 'register failed, please retry later';
         break;
       }
     default:

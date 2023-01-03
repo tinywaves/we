@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const { userServices } = require('../services');
 const { PRIVATE_KEY } = require('../app/config');
+const { REGISTER_FAILED } = require('../constants/error-types');
 
 class UserControllers {
   /**
@@ -15,7 +16,11 @@ class UserControllers {
     // control database
     const result = await userServices.createNewUser(userFormData);
     // return a response
-    ctx.body = result;
+    if (result.fieldCount === 0) {
+      ctx.body = { username: userFormData.username };
+    } else {
+      ctx.app.emit('error', new Error(REGISTER_FAILED), ctx);
+    }
   }
 
   /**
