@@ -41,6 +41,11 @@ class UserControllers {
     };
   }
 
+  /**
+   * authenticate success
+   * @param {*} ctx 
+   * @param {*} next 
+   */
   async authSuccess(ctx, next) {
     ctx.body = {
       authorized: true
