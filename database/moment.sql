@@ -10,3 +10,12 @@ create table if not exists `moment`
 
 select *
 from moment;
+
+select m.id      as                                      id,
+       m.content as                                      content,
+       m.createAt                                        createTime,
+       m.updateAt                                        updateTime,
+       JSON_OBJECT('id', u.id, 'authorName', u.username) author
+from moment m
+         left join users u on u.id = m.user_id
+where m.id = 11;

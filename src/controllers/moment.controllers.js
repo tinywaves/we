@@ -1,4 +1,4 @@
-const { insertMoment } = require('../services/moment.services');
+const { insertMoment, getMomentDetailById } = require('../services/moment.services');
 const { CREATE_MOMENT_ERROR } = require('../constants/error-types');
 
 class MomentControllers {
@@ -13,6 +13,14 @@ class MomentControllers {
     } else {
       ctx.app.emit('error', new Error(CREATE_MOMENT_ERROR), ctx);
     }
+  }
+
+  // get a moment detail
+  async getMomentDetail(ctx) {
+    const momentId = ctx.params.momentId;
+    const momentDetail = await getMomentDetailById(momentId);
+
+    ctx.body = momentDetail;
   }
 }
 
