@@ -8,13 +8,12 @@ const {
   UNAUTHORIZED_TOKEN,
   AUTHORIZATION_MISSING
 } = require('../constants/error-types');
-const { userServices } = require('../services');
+const { getUserByUsername } = require('../services/user.services');
 const { md5Transform } = require('../utils');
 const { PUBLIC_KEY } = require('../app/config');
 
 const verifyUser = async (ctx, next) => {
   const { username, password } = ctx.request.body;
-
   // username or password should not be empty
   if (
     !username ||
@@ -26,7 +25,7 @@ const verifyUser = async (ctx, next) => {
   }
 
   // username should be unique
-  const result = await userServices.getUserByUsername(username);
+  const result = await getUserByUsername(username);
 
   if (result.length) {
     return ctx.app.emit('error', new Error(USER_ALREADY_EXIST), ctx);
@@ -45,7 +44,6 @@ const handlePassword = async (ctx, next) => {
 
 const verifyLogin = async (ctx, next) => {
   const { username, password } = ctx.request.body;
-
   // username or password should not be empty
   if (
     !username ||
@@ -57,7 +55,7 @@ const verifyLogin = async (ctx, next) => {
   }
 
   // judge if user is existing
-  const result = await userServices.getUserByUsername(username);
+  const result = await getUserByUsername(username);
   const user = result[0];
 
   if (!user) {
@@ -66,6 +64,7 @@ const verifyLogin = async (ctx, next) => {
 
   // judge if password is correct
   const md5TransformPassword = md5Transform(password);
+
   if (md5TransformPassword !== user?.password) {
     return ctx.app.emit('error', new Error(PASSWORD_IS_INCORRECT), ctx);
   }
@@ -85,16 +84,18 @@ const verifyAuth = async (ctx, next) => {
 
     // verify token
     try {
-      jwt.verify(token, PUBLIC_KEY, {
+      const user = jwt.verify(token, PUBLIC_KEY, {
         algorithms: ['RS256']
       });
 
-      await next();
+      ctx.user = user;
     } catch (error) {
-      ctx.app.emit('error', new Error(UNAUTHORIZED_TOKEN), ctx);
+      return ctx.app.emit('error', new Error(UNAUTHORIZED_TOKEN), ctx);
     }
+
+    await next();
   } else {
-    ctx.app.emit('error', new Error(AUTHORIZATION_MISSING), ctx);
+    return ctx.app.emit('error', new Error(AUTHORIZATION_MISSING), ctx);
   }
 };
 

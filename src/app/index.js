@@ -7,9 +7,7 @@ const errorHandler = require('./error-handler');
 const app = new Koa();
 
 app.use(koaBodyParser());
-
 useRouters(app);
-
 app.on('error', errorHandler);
 
 module.exports = app;

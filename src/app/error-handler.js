@@ -5,7 +5,8 @@ const {
   PASSWORD_IS_INCORRECT,
   REGISTER_FAILED,
   UNAUTHORIZED_TOKEN,
-  AUTHORIZATION_MISSING
+  AUTHORIZATION_MISSING,
+  CREATE_MOMENT_ERROR
 } = require('../constants/error-types');
 
 module.exports = (error, ctx) => {
@@ -52,6 +53,12 @@ module.exports = (error, ctx) => {
       {
         status = 500;
         errorMessage = 'please carry token when make a request';
+        break;
+      }
+    case CREATE_MOMENT_ERROR:
+      {
+        status = 400;
+        errorMessage = 'post moment failed, please retry later';
         break;
       }
     default:

@@ -1,24 +1,19 @@
 const KoaRouter = require('koa-router');
 
-const { userControllers } = require('../controllers');
-const { userMiddlewares } = require('../middlewares');
+const {
+  verifyUser,
+  handlePassword,
+  verifyLogin,
+  verifyAuth
+} = require('../middlewares/user.middlewares');
+const { createNewUser, login, authSuccess } = require('../controllers/user.controllers');
 
 const userRouters = new KoaRouter({ prefix: '/user' });
 
-userRouters.post('/register',
-  userMiddlewares.verifyUser,
-  userMiddlewares.handlePassword,
-  userControllers.createNewUser
-);
+userRouters.post('/register', verifyUser, handlePassword, createNewUser);
 
-userRouters.post('/login',
-  userMiddlewares.verifyLogin,
-  userControllers.login
-);
+userRouters.post('/login', verifyLogin, login);
 
-userRouters.get('/authorization',
-  userMiddlewares.verifyAuth,
-  userControllers.authSuccess
-);
+userRouters.get('/authorization', verifyAuth, authSuccess);
 
 module.exports = userRouters;
