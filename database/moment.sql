@@ -19,3 +19,10 @@ select m.id      as                                      id,
 from moment m
          left join users u on u.id = m.user_id
 where m.id = 11;
+
+insert into moment (content, user_id)
+values ('想0.5倍速播放最近的日子。', 1);
+insert into moment (content, user_id)
+values ('世界很烦，但你要很可爱。', 2);
+insert into moment (content, user_id)
+values ('😈皱巴巴的生活需要适时的熨烫一下。', 3);
