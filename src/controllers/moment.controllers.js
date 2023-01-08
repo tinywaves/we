@@ -1,4 +1,8 @@
-const { insertMoment, getMomentDetailById } = require('../services/moment.services');
+const {
+  insertMoment,
+  getMomentDetailById,
+  getMomentListByLimited
+} = require('../services/moment.services');
 const { CREATE_MOMENT_ERROR } = require('../constants/error-types');
 
 class MomentControllers {
@@ -18,9 +22,17 @@ class MomentControllers {
   // get a moment detail
   async getMomentDetail(ctx) {
     const momentId = ctx.params.momentId;
-    const momentDetail = await getMomentDetailById(momentId);
+    const [momentDetail] = await getMomentDetailById(momentId);
 
     ctx.body = momentDetail;
+  }
+
+  // get moment list
+  async getMomentList(ctx) {
+    const { offset, size } = ctx.query;
+    const momentList = await getMomentListByLimited(offset, size);
+
+    ctx.body = momentList;
   }
 }
 

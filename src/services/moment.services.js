@@ -19,7 +19,23 @@ class MomentServices {
       left join users u on u.id = m.user_id
       where m.id = ?;
     `;
-    const [[result]] = await connections.execute(statement, [momentId]);
+    const [result] = await connections.execute(statement, [momentId]);
+
+    return result;
+  }
+
+  async getMomentListByLimited(offset, size) {
+    const statement = `
+      select m.id as id,
+             m.content as content,
+             m.createAt createTime,
+             m.updateAt updateTime,
+             JSON_OBJECT('id', u.id, 'authName', u.username) author
+      from moment m
+      left join users u on u.id = m.user_id
+      limit ?, ?;
+    `;
+    const [result] = await connections.execute(statement, [offset, size]);
 
     return result;
   }
