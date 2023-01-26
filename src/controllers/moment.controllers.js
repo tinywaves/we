@@ -34,6 +34,12 @@ class MomentControllers {
 
     ctx.body = momentList;
   }
+
+  // update moment
+  async updateMoment(ctx) {
+    const momentId = ctx.params.momentId;
+    ctx.body = 'update' + momentId;
+  }
 }
 
 module.exports = new MomentControllers();
