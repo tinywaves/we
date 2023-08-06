@@ -1,5 +1,11 @@
 package main
 
+import "wehub/internal/web"
+
 func main() {
-	println("Hello wehub")
+	server := web.InitWeb()
+	err := server.Run(":8080")
+	if err != nil {
+		return
+	}
 }
