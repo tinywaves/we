@@ -6,6 +6,10 @@ import (
 	"wehub/internal/repository/dao"
 )
 
+var (
+	ErrorUserDuplicateEmail = dao.ErrorUserDuplicateEmail
+)
+
 type UserRepository struct {
 	dao *dao.UserDao
 }
