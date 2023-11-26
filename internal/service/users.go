@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"golang.org/x/crypto/bcrypt"
 	"wehub/internal/domain"
 	"wehub/internal/repository"
 )
@@ -17,5 +18,10 @@ func InitUsersService(repo *repository.UserRepository) *UsersService {
 }
 
 func (svc *UsersService) SignUp(ctx context.Context, u domain.User) error {
+	password, err := bcrypt.GenerateFromPassword([]byte(u.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	u.Password = string(password)
 	return svc.repo.CreateNewUser(ctx, u)
 }
