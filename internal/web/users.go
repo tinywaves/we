@@ -1,23 +1,26 @@
 package web
 
 import (
-	"fmt"
 	regexp "github.com/dlclark/regexp2"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"wehub/internal/domain"
+	"wehub/internal/service"
 )
 
 type UsersHandler struct {
+	svc                        *service.UsersService
 	emailCompiledExpression    *regexp.Regexp
 	passwordCompiledExpression *regexp.Regexp
 }
 
-func InitUserHandler() *UsersHandler {
+func InitUsersHandler(svc *service.UsersService) *UsersHandler {
 	const (
 		emailRegexpPattern    = `^\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$`
 		passwordRegexpPattern = `^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$`
 	)
 	return &UsersHandler{
+		svc:                        svc,
 		emailCompiledExpression:    regexp.MustCompile(emailRegexpPattern, regexp.None),
 		passwordCompiledExpression: regexp.MustCompile(passwordRegexpPattern, regexp.None),
 	}
@@ -61,9 +64,20 @@ func (u *UsersHandler) SignUp(ctx *gin.Context) {
 		return
 	}
 
-	// database
+	// call svc to use service to process the request.
+	err := u.svc.SignUp(
+		ctx,
+		domain.User{
+			Email:    request.Email,
+			Password: request.Password,
+		},
+	)
+	if err != nil {
+		ctx.String(http.StatusOK, "System error")
+		return
+	}
 
-	fmt.Printf("%v\n", request)
+	ctx.String(http.StatusOK, "Sign up successful")
 }
 
 func (u *UsersHandler) SignIn(context *gin.Context) {
