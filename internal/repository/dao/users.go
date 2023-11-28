@@ -9,7 +9,8 @@ import (
 )
 
 var (
-	ErrorUserDuplicateEmail = errors.New("duplicate email address")
+	ErrorUserDuplicateEmail     = errors.New("ErrorUserDuplicateEmail")
+	ErrorInvalidEmailOrPassword = errors.New("ErrorInvalidEmailOrPassword")
 )
 
 type UserDao struct {
@@ -45,4 +46,14 @@ func (dao *UserDao) InsertNewUser(ctx context.Context, u User) error {
 		}
 	}
 	return err
+}
+
+func (dao *UserDao) FindUserByEmail(ctx context.Context, email string) (User, error) {
+	var user User
+	err := dao.database.WithContext(ctx).Where("email = ?", email).First(&user).Error
+	var mysqlError *mysql.MySQLError
+	if err != nil && !errors.As(err, &mysqlError) {
+		return user, ErrorInvalidEmailOrPassword
+	}
+	return user, err
 }

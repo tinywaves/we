@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	ErrorUserDuplicateEmail = repository.ErrorUserDuplicateEmail
+	ErrorUserDuplicateEmail     = repository.ErrorUserDuplicateEmail
+	ErrorInvalidEmailOrPassword = repository.ErrorInvalidEmailOrPassword
 )
 
 type UsersService struct {
@@ -28,4 +29,16 @@ func (svc *UsersService) SignUp(ctx context.Context, u domain.User) error {
 	}
 	u.Password = string(password)
 	return svc.repo.CreateNewUser(ctx, u)
+}
+
+func (svc *UsersService) SignIn(ctx context.Context, u domain.User) error {
+	user, err := svc.repo.FindUserByEmail(ctx, u.Email)
+	if err != nil {
+		return err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(u.Password))
+	if err != nil {
+		return ErrorInvalidEmailOrPassword
+	}
+	return nil
 }

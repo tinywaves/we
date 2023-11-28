@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	ErrorUserDuplicateEmail = dao.ErrorUserDuplicateEmail
+	ErrorUserDuplicateEmail     = dao.ErrorUserDuplicateEmail
+	ErrorInvalidEmailOrPassword = dao.ErrorInvalidEmailOrPassword
 )
 
 type UserRepository struct {
@@ -25,4 +26,15 @@ func (repo *UserRepository) CreateNewUser(ctx context.Context, u domain.User) er
 		Email:    u.Email,
 		Password: u.Password,
 	})
+}
+
+func (repo *UserRepository) FindUserByEmail(ctx context.Context, email string) (domain.User, error) {
+	user, err := repo.dao.FindUserByEmail(ctx, email)
+	if err != nil {
+		return domain.User{}, err
+	}
+	return domain.User{
+		Email:    user.Email,
+		Password: user.Password,
+	}, nil
 }

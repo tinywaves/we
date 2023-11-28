@@ -85,8 +85,32 @@ func (u *UsersHandler) SignUp(ctx *gin.Context) {
 	ctx.String(http.StatusOK, "Sign up successful")
 }
 
-func (u *UsersHandler) SignIn(context *gin.Context) {
+func (u *UsersHandler) SignIn(ctx *gin.Context) {
+	type Request struct {
+		Email    string `json:"email"`
+		Password string `json:"password"`
+	}
+	var request Request
+	if err := ctx.Bind(&request); err != nil {
+		return
+	}
+	err := u.svc.SignIn(
+		ctx,
+		domain.User{
+			Email:    request.Email,
+			Password: request.Password,
+		},
+	)
+	if errors.Is(err, service.ErrorInvalidEmailOrPassword) {
+		ctx.String(http.StatusOK, "Your email or password is wrong")
+		return
+	}
+	if err != nil {
+		ctx.String(http.StatusOK, "System error")
+		return
+	}
 
+	ctx.String(http.StatusOK, "Sign in successful")
 }
 
 func (u *UsersHandler) Edit(context *gin.Context) {
